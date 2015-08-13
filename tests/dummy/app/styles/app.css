@@ -1,0 +1,25 @@
+@import url('bootstrap.min.css');
+@import url('fonts.css');
+@import url('pygment_trac.css');
+@import url('style.css');
+@import url('styles.css');
+@import url("https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css");
+
+
+body {
+    padding: 0px !important;
+}
+
+.really-big-spacer {
+    height: 1500px;
+    width: 100px;
+    margin: auto;
+}
+
+.really-big-spacer .fa {
+    font-size: 100px;
+}
+
+h1, h2 {
+    text-align: center;
+}

@@ -1,25 +1,44 @@
-# Ember-ic-you
+# ember-ic-you
 
-This README outlines the details of collaborating on this Ember addon.
+ember-ic-you is a simple scroll listener that sends an action when the element is in view.
 
-## Installation
+See a demo here: [http://vestorly.github.io/ember-ic-you](http://vestorly.github.io/ember-ic-you)
 
-* `git clone` this repository
-* `npm install`
-* `bower install`
+### Installation
 
-## Running
+* `npm install ember-ic-you`
 
-* `ember server`
-* Visit your app at http://localhost:4200.
+### Usage
 
-## Running Tests
+At a basic level, you can use the listener in any template.
 
-* `ember test`
-* `ember test --server`
+```
+// template.hbs
 
-## Building
+{{ember-ic-you}}
 
-* `ember build`
+// containing component or route (or controller)
 
-For more information on using ember-cli, visit [http://www.ember-cli.com/](http://www.ember-cli.com/).
+actions: {
+  crossedTheLine(above) {
+    // do lots of cool stuff
+  }
+}
+
+```
+
+### Advanced
+
+ember-ic-you is customizable!
+
+* `crossedTheLine` - action that is sent when the line is crossed
+  * default: `'crossedTheLine'`
+
+* `enabled` - whether the listeners should be enabled
+  * default: `true`
+
+* `triggerDistance` - the distance from the bottom at which `crossedTheLine` fires
+  * default: `0`
+
+* `scrollContainer` - selector for the container that will be scrolled
+  * default: `null` (will select `window`)
