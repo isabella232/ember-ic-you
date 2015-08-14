@@ -6,6 +6,12 @@ module.exports = function(defaults) {
     // Add options here
   });
 
+  app.import('app/styles/fonts.css');
+  app.import('app/styles/style.css');
+  app.import('app/styles/styles.css');
+  app.import('app/styles/pygment_trac.css');
+  app.import('app/styles/bootstrap.min.css');
+
   /*
     This build file specifes the options for the dummy test app of this
     addon, located in `/tests/dummy`
