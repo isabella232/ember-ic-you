@@ -6,7 +6,11 @@ See a demo here: [http://vestorly.github.io/ember-ic-you](http://vestorly.github
 
 ### Installation
 
-* `npm install ember-ic-you`
+`ember install ember-ic-you`
+
+### Installation for ember-cli 0.1.5 - 0.2.2
+
+`ember install:addon ember-ic-you`
 
 ### Usage
 
