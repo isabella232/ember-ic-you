@@ -1,6 +1,6 @@
 {
   "name": "ember-ic-you",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A simple scroll listener for Ember applications",
   "directories": {
     "doc": "doc",

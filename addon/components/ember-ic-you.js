@@ -58,7 +58,10 @@ export default Component.extend({
    @default null
    */
 
-  scrollContainer: null,
+  _scrollContainer: computed(function() {
+    let selector = this.get('scrollContainer');
+    return selector ? this.$().closest(selector) : Ember.$(window);
+  }),
 
   /**
    Caches the elements that will be used in each scroll cycle, sets an observer
@@ -68,16 +71,6 @@ export default Component.extend({
    */
 
   didInsertElement() {
-    let selector = this.get('scrollContainer');
-    let element = this.$();
-
-    let scrollContainer = selector ? element.closest(selector) : Ember.$(window);
-
-    this.setProperties({
-      scrollContainer: scrollContainer,
-      element: element
-    });
-
     this.addObserver('enabled', this, '_switch');
     this._switch();
   },
@@ -103,10 +96,6 @@ export default Component.extend({
 
   willDestroyElement() {
     this.deactivateListeners();
-    this.setProperties({
-      scrollContainer: null,
-      element: null
-    });
   },
 
   /**
@@ -116,7 +105,7 @@ export default Component.extend({
    */
 
   activateListeners() {
-    let scrollContainer = this.get('scrollContainer'),
+    let scrollContainer = this.get('_scrollContainer'),
         eventNames = this.get('eventNames');
 
     scrollContainer.on(eventNames, () => {
@@ -131,7 +120,7 @@ export default Component.extend({
    */
 
   deactivateListeners() {
-    let scrollContainer = this.get('scrollContainer'),
+    let scrollContainer = this.get('_scrollContainer'),
         eventNames = this.get('eventNames');
 
     scrollContainer.off(eventNames);
@@ -163,12 +152,11 @@ export default Component.extend({
    */
 
   _listenerFired() {
-    let scrollContainer = this.get('scrollContainer'),
-        element = this.get('element'),
+    let scrollContainer = this.get('_scrollContainer'),
         triggerDistance = this.get('triggerDistance'),
         previousAboveTheTrigger = this.get('aboveTheTrigger');
 
-    let offsetFromTop = element.offset().top,
+    let offsetFromTop = this.$().offset().top,
         scrollContainerPosition =  scrollContainer.scrollTop(),
         scrollContainerHeight = scrollContainer.height();
 
