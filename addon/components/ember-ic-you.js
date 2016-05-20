@@ -109,7 +109,7 @@ export default Component.extend({
         eventNames = this.get('eventNames');
 
     scrollContainer.on(eventNames, () => {
-      run.once(this, '_listenerFired');
+      this._listenerFired();
     });
   },
 
