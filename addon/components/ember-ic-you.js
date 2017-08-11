@@ -1,6 +1,11 @@
 import Ember from 'ember';
 
-const { Component, guidFor, run, computed } = Ember;
+const {
+  Component,
+  guidFor,
+  run,
+  computed
+} = Ember;
 
 /**
  A simple component to send an action when it passes a distance from the bottom
@@ -49,6 +54,16 @@ export default Component.extend({
    */
 
   aboveTheTrigger: false,
+
+  /**
+   Optional - the container element to be scrolled.
+
+   @property scrollContainer
+   @type {String}
+   @default ''
+   */
+
+  scrollContainer: null,
 
   /**
    Selector for the scrolled container. If null, the container will be the window.
@@ -157,7 +172,7 @@ export default Component.extend({
         previousAboveTheTrigger = this.get('aboveTheTrigger');
 
     let offsetFromTop = this.$().offset().top,
-        scrollContainerPosition =  scrollContainer.scrollTop(),
+        scrollContainerPosition = this.get('scrollContainer') ? scrollContainer.offset().top : scrollContainer.scrollTop(),
         scrollContainerHeight = scrollContainer.height();
 
     let positionOfMe = offsetFromTop - scrollContainerPosition - scrollContainerHeight;
