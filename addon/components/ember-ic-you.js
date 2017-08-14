@@ -4,7 +4,8 @@ const {
   Component,
   guidFor,
   run,
-  computed
+  computed,
+  isEmpty,
 } = Ember;
 
 /**
@@ -56,26 +57,47 @@ export default Component.extend({
   aboveTheTrigger: false,
 
   /**
-   Optional - the container element to be scrolled.
-
-   @property scrollContainer
-   @type {String}
-   @default ''
-   */
-
-  scrollContainer: null,
-
-  /**
-   Selector for the scrolled container. If null, the container will be the window.
+   Optional - the viewport element holding the content.
 
    @property scrollContainer
    @type {String}
    @default null
    */
 
-  _scrollContainer: computed(function() {
+  scrollContainer: null,
+
+  /**
+   Optional - the content that is currently being scrolled.
+
+   @property scrolledContent
+   @type {String}
+   @default null
+   */
+
+  scrolledContent: null,
+
+  /**
+   Selector for the viewport container. If null, the container will be the window.
+
+   @property scrollContainer
+   @type {String}
+   @default null
+   */
+
+  _scrollContainer: computed('scrollContainer', function() {
     let selector = this.get('scrollContainer');
     return selector ? this.$().closest(selector) : Ember.$(window);
+  }),
+
+  /**
+   Selector for the content being scrolled.
+
+   @property _scrolledContent
+   @type {String}
+   */
+
+  _scrolledContent: computed('scrolledContent', function() {
+    return this.$().closest(this.get('scrolledContent'));
   }),
 
   /**
@@ -167,13 +189,18 @@ export default Component.extend({
    */
 
   _listenerFired() {
-    let scrollContainer = this.get('_scrollContainer'),
-        triggerDistance = this.get('triggerDistance'),
-        previousAboveTheTrigger = this.get('aboveTheTrigger');
+    let scrollContainer = this.get('_scrollContainer');
+    let scrolledContent = this.get('_scrolledContent');
+    let triggerDistance = this.get('triggerDistance');
+    let previousAboveTheTrigger = this.get('aboveTheTrigger');
 
-    let offsetFromTop = this.$().offset().top,
-        scrollContainerPosition = this.get('scrollContainer') ? scrollContainer.offset().top : scrollContainer.scrollTop(),
-        scrollContainerHeight = scrollContainer.height();
+    let icYouWindowPosition = this.$().offset().top;
+
+    // If you are scrolling content that isn't the window itself, there should be a provided `scrolledContent` selector
+    // for that content. The position of `ember-ic-you` would be measured relative to this scrolled content.
+    let offsetFromTop = isEmpty(scrolledContent) ? icYouWindowPosition : icYouWindowPosition - scrolledContent.offset().top;
+    let scrollContainerPosition = scrollContainer.scrollTop();
+    let scrollContainerHeight = scrollContainer.height();
 
     let positionOfMe = offsetFromTop - scrollContainerPosition - scrollContainerHeight;
     let aboveTheTrigger = ( positionOfMe <= triggerDistance );
