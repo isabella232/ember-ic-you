@@ -6,6 +6,7 @@ const {
   run,
   computed,
   isEmpty,
+  isBlank
 } = Ember;
 
 /**
@@ -46,17 +47,6 @@ export default Component.extend({
   triggerDistance: 0,
 
   /**
-   Keeps state of page position relative to the component's
-   trigger `triggerDistance`
-
-   @property aboveTheTrigger
-   @type {Boolean}
-   @default false
-   */
-
-  aboveTheTrigger: false,
-
-  /**
    Optional - the viewport element holding the content.
 
    @property scrollContainer
@@ -77,6 +67,16 @@ export default Component.extend({
   scrolledContent: null,
 
   /**
+   The cached scroll container - used to remove listener if `scrollContainer` gets re-computed.
+
+   @property cachedContainer
+   @type {Object}
+   @default null
+   */
+
+  cachedContainer: null,
+
+  /**
    Selector for the viewport container. If null, the container will be the window.
 
    @property scrollContainer
@@ -90,7 +90,7 @@ export default Component.extend({
   }),
 
   /**
-   Selector for the content being scrolled.
+   Selector for the content being scrolled. If null, the scrolled content will be the document.
 
    @property _scrolledContent
    @type {String}
@@ -104,10 +104,10 @@ export default Component.extend({
    Caches the elements that will be used in each scroll cycle, sets an observer
    on `enabled` to fire `_switch`, and calls `_switch`;
 
-   @method didInsertElement
+   @method didRender
    */
 
-  didInsertElement() {
+  didRender() {
     this.addObserver('enabled', this, '_switch');
     this._switch();
   },
@@ -132,7 +132,7 @@ export default Component.extend({
    */
 
   willDestroyElement() {
-    this.deactivateListeners();
+    this.deactivateListeners(this.get('_scrollContainer'));
   },
 
   /**
@@ -142,8 +142,11 @@ export default Component.extend({
    */
 
   activateListeners() {
-    let scrollContainer = this.get('_scrollContainer'),
-        eventNames = this.get('eventNames');
+    let scrollContainer = this.get('_scrollContainer');
+    let eventNames = this.get('eventNames');
+
+    this.deactivateListeners(this.get('cachedContainer'));
+    this.set('cachedContainer', scrollContainer);
 
     scrollContainer.on(eventNames, () => {
       this._listenerFired();
@@ -156,11 +159,11 @@ export default Component.extend({
    @method deactivateListeners
    */
 
-  deactivateListeners() {
-    let scrollContainer = this.get('_scrollContainer'),
-        eventNames = this.get('eventNames');
+  deactivateListeners(container) {
+    if (isBlank(container)) { return; }
+    this.set('cachedContainer', null);
 
-    scrollContainer.off(eventNames);
+    container.off(this.get('eventNames'));
   },
 
   /**
@@ -176,7 +179,7 @@ export default Component.extend({
     if (enabled) {
       this.activateListeners();
     } else {
-      this.deactivateListeners();
+      this.deactivateListeners(this.get('_scrollContainer'));
     }
   },
 
@@ -192,7 +195,6 @@ export default Component.extend({
     let scrollContainer = this.get('_scrollContainer');
     let scrolledContent = this.get('_scrolledContent');
     let triggerDistance = this.get('triggerDistance');
-    let previousAboveTheTrigger = this.get('aboveTheTrigger');
 
     let icYouWindowPosition = this.$().offset().top;
 
@@ -203,11 +205,10 @@ export default Component.extend({
     let scrollContainerHeight = scrollContainer.height();
 
     let positionOfMe = offsetFromTop - scrollContainerPosition - scrollContainerHeight;
-    let aboveTheTrigger = ( positionOfMe <= triggerDistance );
+    let scrolledPassedTrigger = ( positionOfMe <= triggerDistance );
 
-    if (aboveTheTrigger !== previousAboveTheTrigger) {
-      this.set('aboveTheTrigger', aboveTheTrigger);
-      run.debounce(this, 'sendAction', 'crossedTheLine', aboveTheTrigger, 50);
+    if (scrolledPassedTrigger) {
+      run.debounce(this, 'sendAction', 'crossedTheLine', scrolledPassedTrigger, 25);
     }
   }
 });
