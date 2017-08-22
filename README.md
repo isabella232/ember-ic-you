@@ -46,3 +46,6 @@ ember-ic-you is customizable!
 
 * `scrollContainer` - selector for the container that will be scrolled
   * default: `null` (will select `window`)
+
+* `scrolledContent` - (optional) selector for the content that will be scrolled if the `scrollContainer` is NOT `window`
+  * default: `null`
