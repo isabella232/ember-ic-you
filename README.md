@@ -12,7 +12,9 @@ See a demo here: [http://vestorly.github.io/ember-ic-you](http://vestorly.github
 
 `ember install:addon ember-ic-you`
 
-### Usage
+* `npm test` (Runs `ember try:testall` to test your addon against multiple Ember versions)
+* `ember test`
+* `ember test --server`
 
 At a basic level, you can use the listener in any template.
 
