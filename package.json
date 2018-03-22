@@ -13,7 +13,7 @@
   },
   "repository": "https://github.com/Vestorly/ember-ic-you",
   "engines": {
-    "node": ">= 0.10.0"
+    "node": ">= 8"
   },
   "author": "",
   "license": "MIT",
