@@ -1,4 +1,6 @@
 {
   "name": "ember-ic-you",
-  "dependencies": {}
+  "dependencies": {
+    "jquery": "^1.11.1"
+  }
 }
